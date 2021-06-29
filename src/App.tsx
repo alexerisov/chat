@@ -5,6 +5,7 @@ import './App.css';
 import Box from '@material-ui/core/Box';
 import {Grid, Paper, Typography} from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import Login from "./components/Login/Login";
 
 const darkTheme = createMuiTheme({
   palette: {
@@ -23,20 +24,7 @@ function App() {
   return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
-        <Grid
-            container
-            spacing={0}
-            direction="column"
-            alignItems="center"
-            justify="center"
-            style={{ minHeight: '100vh' }}
-        >
-
-          <Grid item xs={3}>
-            <Typography>Chat Content</Typography>
-          </Grid>
-
-        </Grid>
+          <Login />
       </ThemeProvider>
   );
 }
