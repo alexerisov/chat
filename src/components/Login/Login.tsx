@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useFormik } from 'formik'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -34,6 +35,30 @@ const useStyles = makeStyles((theme) => ({
 
 function Login() {
     const classes = useStyles();
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validate: values => {
+        const errors = {};
+        if (!values.email) {
+            errors.email = 'Required';
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+        ) {
+            errors.email = 'Invalid email address';
+        }
+        return errors;
+        },
+        onSubmit: (values, { setSubmitting }) => {
+        setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+        }, 400);
+    }
+    });
+    
     return (
         <Container component="main" maxWidth="xs">
             <div className={classes.paper}>
@@ -43,7 +68,9 @@ function Login() {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form}
+                      onSubmit={formik.handleSubmit}
+                      noValidate>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -54,6 +81,8 @@ function Login() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        onChange={formik.handleChange}
+                        value={formik.values.email}
                     />
                     <TextField
                         variant="outlined"
@@ -65,6 +94,8 @@ function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={formik.handleChange}
+                        value={formik.values.password}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
