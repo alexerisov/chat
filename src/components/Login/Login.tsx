@@ -10,7 +10,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useFormik } from 'formik'
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,30 +36,28 @@ const useStyles = makeStyles((theme) => ({
 
 function Login() {
     const classes = useStyles();
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: '',
-        },
-        validate: values => {
-        const errors = {};
-        if (!values.email) {
-            errors.email = 'Required';
-        } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-        ) {
-            errors.email = 'Invalid email address';
-        }
-        return errors;
-        },
-        onSubmit: (values, { setSubmitting }) => {
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-        }, 400);
-    }
+    const validationSchema = yup.object({
+        email: yup
+            .string()
+            .email('Enter a valid email')
+            .required('Email is required'),
+        password: yup
+            .string()
+            .min(8, 'Password should be of minimum 8 characters length')
+            .required('Password is required'),
     });
-    
+
+        const formik = useFormik({
+            initialValues: {
+                email: '',
+                password: '',
+            },
+            validationSchema: validationSchema,
+            onSubmit: (values) => {
+                alert(JSON.stringify(values, null, 2));
+            },
+        });
+
     return (
         <Container component="main" maxWidth="xs">
             <div className={classes.paper}>
@@ -83,6 +82,8 @@ function Login() {
                         autoFocus
                         onChange={formik.handleChange}
                         value={formik.values.email}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
                     />
                     <TextField
                         variant="outlined"
@@ -96,6 +97,8 @@ function Login() {
                         autoComplete="current-password"
                         onChange={formik.handleChange}
                         value={formik.values.password}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
